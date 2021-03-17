@@ -7,6 +7,8 @@
 #define dbg(fmt, msg... )
 #endif
 
+#define ARRAY_MAX_SIZE 50
+
 typedef struct {
     int front;
     int rear;
@@ -14,5 +16,8 @@ typedef struct {
     int maxSize;
     int *data;
 } ArrayInfo;
+
+void TestArrayStack(void);
+void TestArrayQueue(void);
 
 #endif

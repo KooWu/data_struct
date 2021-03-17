@@ -3,7 +3,7 @@
 
 int main(void)
 {
-    int num = 9;
-    dbg("num:%d\n", num);
+    TestArrayStack();
+    TestArrayQueue();
     return 0;
 }
