@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include "comm.h"
 #include "list.h"
 
-static int InitListStack(ListNode *root, int size)
+int InitListStack(ListNode *root, int size)
 {
     if ((root == 0) || (size == 0) || (size > LIST_MAX_SIZE)) {
         dbg("invalid param");
@@ -13,7 +14,7 @@ static int InitListStack(ListNode *root, int size)
     return 0;
 }
 
-static int ReleaseListStack(ListNode *root)
+int ReleaseListStack(ListNode *root)
 {
     if (root == 0) {
         dbg("invalid param");
@@ -25,7 +26,7 @@ static int ReleaseListStack(ListNode *root)
     return 0;
 }
 
-static int PopListStack(ListNode *root, ListNode *node)
+int PopListStack(ListNode *root, ListNode *node)
 {
     if ((root == NULL) || (node == NULL)) {
         dbg("invalid param");
@@ -40,7 +41,7 @@ static int PopListStack(ListNode *root, ListNode *node)
     return 0;
 }
 
-static int PushListStack(ListNode *root, ListNode *node)
+int PushListStack(ListNode *root, ListNode *node)
 {
     if ((root == NULL) || (node == NULL)) {
         dbg("invalid param");

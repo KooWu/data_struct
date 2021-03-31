@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "comm.h"
 #include "array.h"
 
-static int InitArrayStack(ArrayInfo *stack, int size)
+int InitArrayStack(ArrayInfo *stack, int size)
 {
     if ((stack == NULL) || (size <= 0) || (size > ARRAY_MAX_SIZE)) {
         dbg("invalid param");
@@ -22,7 +23,7 @@ static int InitArrayStack(ArrayInfo *stack, int size)
     return 0;
 }
 
-static int ReleaseArrayStack(ArrayInfo *stack)
+int ReleaseArrayStack(ArrayInfo *stack)
 {
     if (stack == NULL) {
         dbg("invalid param");
@@ -42,7 +43,7 @@ static int ReleaseArrayStack(ArrayInfo *stack)
     return 0;
 }
 
-static int PushArrayStack(ArrayInfo *stack, int val)
+int PushArrayStack(ArrayInfo *stack, int val)
 {
     if ((stack == NULL) || (stack->data == NULL)) {
         dbg("invalid param");
@@ -59,7 +60,7 @@ static int PushArrayStack(ArrayInfo *stack, int val)
     return 0;
 }
 
-static int PopArrayStack(ArrayInfo *stack, int *val)
+int PopArrayStack(ArrayInfo *stack, int *val)
 {
     if ((stack == NULL) || (stack->data == NULL) || (val == NULL)) {
         dbg("invalid param");

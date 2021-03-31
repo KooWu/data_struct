@@ -1,7 +1,8 @@
 #include <stdio.h>
+#include "comm.h"
 #include "list.h"
 
-static int InitListQueue(ListNode *root, int size)
+int InitListQueue(ListNode *root, int size)
 {
     if ((root == 0) || (size == 0) || (size > LIST_MAX_SIZE)) {
         dbg("invalid param");
@@ -13,7 +14,7 @@ static int InitListQueue(ListNode *root, int size)
     return 0;
 }
 
-static int ReleaseListQueue(ListNode *root)
+int ReleaseListQueue(ListNode *root)
 {
     if (root == 0) {
         dbg("invalid param");
@@ -25,7 +26,7 @@ static int ReleaseListQueue(ListNode *root)
     return 0;
 }
 
-static int DeListQueue(ListNode *root, ListNode *node)
+int DeListQueue(ListNode *root, ListNode *node)
 {
     if ((root == NULL) || (node == NULL)) {
         dbg("invalid param");
@@ -40,7 +41,7 @@ static int DeListQueue(ListNode *root, ListNode *node)
     return 0;
 }
 
-static int EnListQueue(ListNode *root, ListNode *node)
+int EnListQueue(ListNode *root, ListNode *node)
 {
     if ((root == NULL) || (node == NULL)) {
         dbg("invalid param");

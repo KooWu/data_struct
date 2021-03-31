@@ -1,12 +1,6 @@
 #ifndef LIST_H
 #define LIST_H
 
-#if 1
-#define dbg(fmt, args... ) printf("file[%s], line[%d]: "fmt"\n", __FILE__, __LINE__, ##args);
-#else
-#define dbg(fmt, msg... )
-#endif
-
 #define LIST_MAX_SIZE 50
 
 typedef struct tagListNode {
@@ -29,6 +23,14 @@ void ReleaseListNode(ListNode *root);
 void TestNodeQueue(void);
 void TestNodeStack(void);
 
+int InitListStack(ListNode *root, int size);
+int ReleaseListStack(ListNode *root);
+int PopListStack(ListNode *root, ListNode *node);
+int PushListStack(ListNode *root, ListNode *node);
 
+int InitListQueue(ListNode *root, int size);
+int ReleaseListQueue(ListNode *root);
+int DeListQueue(ListNode *root, ListNode *node);
+int EnListQueue(ListNode *root, ListNode *node);
 
 #endif

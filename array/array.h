@@ -1,12 +1,6 @@
 #ifndef ARRAY_H
 #define ARRAY_H
 
-#if 1
-#define dbg(fmt, args... ) printf("file[%s], line[%d]: "fmt"\n", __FILE__, __LINE__, ##args);
-#else
-#define dbg(fmt, msg... )
-#endif
-
 #define ARRAY_MAX_SIZE 50
 
 typedef struct {
@@ -19,5 +13,15 @@ typedef struct {
 
 void TestArrayStack(void);
 void TestArrayQueue(void);
+
+int InitArrayStack(ArrayInfo *stack, int size);
+int ReleaseArrayStack(ArrayInfo *stack);
+int PushArrayStack(ArrayInfo *stack, int val);
+int PopArrayStack(ArrayInfo *stack, int *val);
+
+int InitArrayQueue(ArrayInfo *queue, int size);
+int ReleaseArrayQueue(ArrayInfo *queue);
+int EnArrayQueue(ArrayInfo *queue, int val);
+int DeArrayQueue(ArrayInfo *queue, int *val);
 
 #endif

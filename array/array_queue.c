@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include <stdlib.h>
+#include "comm.h"
 #include "array.h"
 
-static int InitArrayQueue(ArrayInfo *queue, int size)
+int InitArrayQueue(ArrayInfo *queue, int size)
 {
     if ((queue == NULL) || (size <= 0) || (size > ARRAY_MAX_SIZE)) {
         dbg("invalid param");
@@ -22,7 +23,7 @@ static int InitArrayQueue(ArrayInfo *queue, int size)
     return 0;
 }
 
-static int ReleaseArrayQueue(ArrayInfo *queue)
+int ReleaseArrayQueue(ArrayInfo *queue)
 {
     if (queue == NULL) {
         dbg("invalid param");
@@ -42,7 +43,7 @@ static int ReleaseArrayQueue(ArrayInfo *queue)
     return 0;
 }
 
-static int EnArrayQueue(ArrayInfo *queue, int val)
+int EnArrayQueue(ArrayInfo *queue, int val)
 {
     if ((queue == NULL) || (queue->data == NULL)) {
         dbg("invalid param");
@@ -60,7 +61,7 @@ static int EnArrayQueue(ArrayInfo *queue, int val)
     return 0;
 }
 
-static int DeArrayQueue(ArrayInfo *queue, int *val)
+int DeArrayQueue(ArrayInfo *queue, int *val)
 {
     if ((queue == NULL) || (queue->data == NULL) || (val == NULL)) {
         dbg("invalid param");
