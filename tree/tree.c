@@ -2,6 +2,7 @@
 #include <stdlib.h>
 #include <stdbool.h>
 #include "comm.h"
+#include "array.h"
 #include "tree.h"
 
 void InitTwoTreeNode(TwoTreeNode *node, int val)
@@ -87,22 +88,52 @@ TwoTreeNode *BuildTwoTreeNode(int *array, int num)
     return root;
 }
 
-TwoTreeNode *GetTwoTreeNodeMidNextNode(const TwoTreeNode *node)
+TwoTreeNode *GetTwoTreeNodeMidNextNode(TwoTreeNode *root, int val)
 {
-    if (node == NULL) {
+    if (root == NULL) {
         dbg("invalid param")
         return NULL;
     }
 
-    TwoTreeNode *cur = node->rightNode;
-    while (1) {
-        if (cur->leftNode != NULL) {
-            cur = cur->leftNode;
+    TwoTreeNode *cur = FindTwoTreeNode(root, val);
+    if (cur == NULL) {
+        dbg("not find %d", val);
+        return NULL;
+    }
+    PrintTwoTreeNodeThreeRegion(cur);
+
+    if (cur->rightNode != NULL) {
+        cur = cur->rightNode;
+        while (1) {
+            if (cur->leftNode != NULL) {
+                cur = cur->leftNode;
+            } else {
+                break;
+            }
+        }
+    } else {
+        if (cur->parent == NULL) {
+            return NULL;
+        }
+        if (cur->parent->leftNode == cur) {
+            cur = cur->parent;
         } else {
-            break;
+            while (1) {
+                if (cur == NULL || cur->parent == NULL) {
+                    dbg("no next node");
+                    return NULL;
+                }
+                if (cur->parent->leftNode == cur) {
+                    cur = cur->parent;
+                    break;
+                }
+                cur = cur->parent;
+            }
         }
     }
-    printf("cur val: %d\n", node->data.val);
+
+    printf("cur val: %d\n", cur->data.val);
+
     return cur;
 }
 
@@ -133,7 +164,9 @@ void ResetDelNodeParentInfo(TwoTreeNode *delNode, TwoTreeNode *newNode)
     } else {
         delNode->parent->rightNode = newNode;
     }
-    newNode->parent = delNode->parent;
+    if (newNode != NULL) {
+        newNode->parent = delNode->parent;
+    }
 }
 
 bool DelTwoTreeNode(TwoTreeNode **root, TwoTreeNode *node)
@@ -157,13 +190,13 @@ bool DelTwoTreeNode(TwoTreeNode **root, TwoTreeNode *node)
         } else {
             *root = delNode->leftNode; //根节点
         }
-    } else if (delNode->leftNode == NULL && delNode->rightNode != NULL) {  //无左子树和有右子树
+    } else if (delNode->leftNode == NULL && delNode->rightNode != NULL) { //无左子树和有右子树
         if (delNode->parent != NULL) {
             ResetDelNodeParentInfo(delNode, delNode->rightNode);
         } else {
             *root = delNode->rightNode; //根节点
         }
-    } else {  //左子树和右子树均有
+    } else { //左子树和右子树均有
         TwoTreeNode *newNode = delNode->rightNode;
         while (1) {
             if (newNode->leftNode == NULL) {
@@ -252,63 +285,171 @@ void PrintTwoTreeNodeTailOrder(const TwoTreeNode *root)
     printf("%d ", root->data.val);
 }
 
-void BstTwoTreeNodePrevOrder(const TwoTreeNode *root)
+void DfsTwoTreeNodePrevOrder(TwoTreeNode *root)
 {
     if (root == NULL) {
+        dbg("invalid root");
         return;
     }
-    PrintTwoTreeNodeTailOrder(root->leftNode);
-    PrintTwoTreeNodeTailOrder(root->rightNode);
-    printf("%d ", root->data.val);
+    ArrayInfo stack;
+    int ret = InitArrayStack(&stack, 50);
+    if (ret != 0) {
+        dbg("InitArrayStack failed");
+        return;
+    }
+
+    int val;
+    TwoTreeNode *cur = root;
+    while (1) {
+        if (cur != NULL) {
+            printf("%d ", cur->data.val);
+            if (cur->rightNode != NULL) {
+                (void)PushArrayStack(&stack, (int)cur->rightNode);
+            }
+            cur = cur->leftNode;
+        } else {
+            ret = PopArrayStack(&stack, &val);
+            if (ret != 0) {
+                break;
+            }
+            cur = (TwoTreeNode *)val;
+        }
+    }
+    printf("end\n");
+    ReleaseArrayStack(&stack);
 }
 
-int main(void)
+void DfsTwoTreeNodeMidOrder(TwoTreeNode *root)
 {
-    int nodeval[] = {9, 5, 3, 7, 15, 23, 11, 1, 10, 4, 13, 12, 21};
-    //int nodeval[] = {9, 5, 3, 7, 15, 23, 11, 1, 10, 4, 13, 12};
-    TwoTreeNode *root = BuildTwoTreeNode(nodeval, sizeof(nodeval) / sizeof(nodeval[0]));
     if (root == NULL) {
-        dbg("BuildTwoTreeNode failed");
-        return 0;
+        dbg("invalid root");
+        return;
     }
-    printf("prev order\n");
-    PrintTwoTreeNodePrevOrder(root);
-    printf("end\n");
-
-    printf("mid order\n");
-    PrintTwoTreeNodeMidOrder(root);
-    printf("end\n");
-
-    printf("tail order\n");
-    PrintTwoTreeNodeTailOrder(root);
-    printf("end\n");
-
-    int val = 16;
-    TwoTreeNode *node = FindTwoTreeNode(root, val);
-    if (node != NULL) {
-        printf("find %d\n", val);
-    } else {
-        printf("not find %d\n", val);
-    }
-    TwoTreeNode delNode;
-    delNode.data.val = 15;
-    bool isDel = DelTwoTreeNode(&root, &delNode);
-    if (isDel) {
-        PrintTwoTreeNodeThreeRegion(&delNode);
+    ArrayInfo stack;
+    int ret = InitArrayStack(&stack, 50);
+    if (ret != 0) {
+        dbg("InitArrayStack failed");
+        return;
     }
 
-    printf("prev order\n");
-    PrintTwoTreeNodePrevOrder(root);
+    int val;
+    TwoTreeNode *cur = root;
+    while (1) {
+        if (cur != NULL) {
+            (void)PushArrayStack(&stack, (int)cur);
+            cur = cur->leftNode;
+        } else {
+            ret = PopArrayStack(&stack, &val);
+            if (ret != 0) {
+                break;
+            }
+            cur = (TwoTreeNode *)val;
+            if (cur == NULL) {
+                dbg("invalid cur node\n");
+                break;
+            }
+            printf("%d ", cur->data.val);
+            cur = cur->rightNode;
+        }
+    }
     printf("end\n");
+    ReleaseArrayStack(&stack);
+}
 
-    printf("mid order\n");
-    PrintTwoTreeNodeMidOrder(root);
+void DfsTwoTreeNodeNextOrder(TwoTreeNode *root)
+{
+    if (root == NULL) {
+        dbg("invalid root");
+        return;
+    }
+    ArrayInfo outputStack;
+    int ret = InitArrayStack(&outputStack, 50);
+    if (ret != 0) {
+        dbg("InitArrayStack failed");
+        return;
+    }
+
+    ArrayInfo stack;
+    ret = InitArrayStack(&stack, 50);
+    if (ret != 0) {
+        dbg("InitArrayStack failed");
+        return;
+    }
+
+    int val;
+    TwoTreeNode *cur = root;
+    while (1) {
+        if (cur != NULL) {
+            (void)PushArrayStack(&stack, (int)cur);
+            (void)PushArrayStack(&outputStack, (int)cur);
+            cur = cur->rightNode;
+        } else {
+            ret = PopArrayStack(&stack, &val);
+            if (ret != 0) {
+                break;
+            }
+            cur = (TwoTreeNode *)val;
+            if (cur == NULL) {
+                dbg("invalid cur node\n");
+                break;
+            }
+            cur = cur->leftNode;
+        }
+    }
+    ReleaseArrayStack(&stack);
+    while (1) {
+        ret = PopArrayStack(&outputStack, &val);
+        if (ret != 0) {
+            break;
+        }
+        cur = (TwoTreeNode *)val;
+        if (cur == NULL) {
+            dbg("invalid cur node\n");
+            break;
+        }
+        printf("%d ", cur->data.val);
+    }
+    ReleaseArrayStack(&outputStack);
+    
+    printf("end\n");    
+}
+
+void BfsTwoTreeNode(TwoTreeNode *root)
+{
+    if (root == NULL) {
+        dbg("invalid root");
+        return;
+    }
+
+    ArrayInfo queue;
+    int ret = InitArrayQueue(&queue, 50);
+    if (ret != 0) {
+        dbg("InitArrayStack failed");
+        return;
+    }
+
+    EnArrayQueue(&queue, (int)root);
+    int val;
+    TwoTreeNode *cur = NULL;
+    while (1) {
+        ret = DeArrayQueue(&queue, &val);
+        if (ret != 0) {
+            break;
+        }
+        cur = (TwoTreeNode *)val;
+        if (cur == NULL) {
+            dbg("invalid cur node");
+        }
+        printf("%d ", cur->data.val);
+        if (cur->leftNode != NULL) {
+            EnArrayQueue(&queue, (int)cur->leftNode);
+        }
+
+        if (cur->rightNode != NULL) {
+            EnArrayQueue(&queue, (int)cur->rightNode);
+        }
+    }
+    ReleaseArrayQueue(&queue);
+    
     printf("end\n");
-
-    printf("tail order\n");
-    PrintTwoTreeNodeTailOrder(root);
-    printf("end\n");
-   
-
-    return 0;
 }

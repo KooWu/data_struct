@@ -207,6 +207,7 @@ void TestListNode(void)
     ReleaseListNode(&root);
 }
 
+#if 0
 int main(void)
 {
     TestListNode();
@@ -214,3 +215,4 @@ int main(void)
     //TestNodeStack();
     return 0;
 }
+#endif
